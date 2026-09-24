@@ -29,6 +29,7 @@ main {
   background: #f7f7f5;
   color: #181818;
   transition: background 0.2s ease, color 0.2s ease;
+  position: relative;
 }
 
 /* Reader */
@@ -198,32 +199,85 @@ main {
   opacity: 0.55;
 }
 
-/* Edit / theme buttons */
+/* App controls */
 
 .edit-button,
-.theme-button {
+.theme-button,
+.controls-button {
   position: absolute;
   border: none;
   background: transparent;
+  z-index: 20;
   color: inherit;
   opacity: 0.45;
-  font-size: 1.2rem;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, background 0.15s ease;
 }
 
 .edit-button:hover,
-.theme-button:hover {
+.theme-button:hover,
+.controls-button:hover {
   opacity: 1;
 }
 
 .edit-button {
   top: 1.5rem;
-  right: 4rem;
+  right: 7.5rem;
+  font-size: 1.2rem;
+}
+
+.controls-button {
+  top: 1.5rem;
+  right: 4.5rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.controls-button:hover {
+  background: rgba(128, 128, 128, 0.12);
 }
 
 .theme-button {
   top: 1.5rem;
   right: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.controls-panel {
+  position: absolute;
+  top: 4rem;
+  right: 1.5rem;
+  z-index: 10;
+  min-width: 230px;
+  padding: 1rem 1.1rem;
+  border: 1px solid #d0d0cc;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #181818;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.controls-panel strong {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.controls-panel div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.controls-panel div span:first-child {
+  font-weight: 600;
+}
+
+.controls-panel div span:last-child {
+  opacity: 0.55;
 }
 
 /* Progress */
@@ -280,4 +334,18 @@ main.dark .input textarea {
 
 main.dark .progress {
   background: rgba(255, 255, 255, 0.12);
+}
+
+main.dark .controls-panel {
+  background: #222;
+  color: #f5f5f5;
+  border-color: #444;
+}
+
+@media (max-width: 600px) {
+  .word {
+    width: 100vw;
+    padding: 0 1rem;
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
 }

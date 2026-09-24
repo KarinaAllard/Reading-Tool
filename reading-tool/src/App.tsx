@@ -44,6 +44,7 @@ function App() {
   const [isReadingMode, setIsReadingMode] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [wpm, setWpm] = useState(200)
+  const [showControls, setShowControls] = useState(false)
 
   const words = useMemo(() => {
     return text.trim() ? text.trim().split(/\s+/) : []
@@ -60,6 +61,71 @@ function App() {
 
   const progress =
     words.length > 0 ? (currentWord / (words.length - 1)) * 100 : 0
+
+  useEffect(() => {
+  function handleKeyDown(event: KeyboardEvent) {
+    const target = event.target as HTMLElement
+
+    // Don't trigger shortcuts while typing
+    if (
+      target.tagName === "TEXTAREA" ||
+      target.tagName === "INPUT" ||
+      target.isContentEditable
+    ) {
+      return
+    }
+
+    if (event.code === "Space") {
+      event.preventDefault()
+
+      if (!words.length) return
+
+      if (!isReadingMode) {
+        setIsReadingMode(true)
+        setIsPlaying(true)
+      } else {
+        setIsPlaying((playing) => !playing)
+      }
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault()
+
+      if (!words.length) return
+
+      setIsPlaying(false)
+      setCurrentWord((current) =>
+        Math.min(current + 1, words.length - 1)
+      )
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault()
+
+      if (!words.length) return
+
+      setIsPlaying(false)
+      setCurrentWord((current) => Math.max(current - 1, 0))
+    }
+
+    if (event.key.toLowerCase() === "r") {
+      event.preventDefault()
+      setCurrentWord(0)
+      setIsPlaying(false)
+    }
+
+    if (event.key === "Escape") {
+      setIsPlaying(false)
+      setIsReadingMode(false)
+    }
+  }
+
+  window.addEventListener("keydown", handleKeyDown)
+
+  return () => {
+    window.removeEventListener("keydown", handleKeyDown)
+  }
+}, [words.length, isReadingMode])
 
   useEffect(() => {
     if (!isPlaying) return
@@ -107,6 +173,39 @@ function App() {
 
   return (
     <main className={isDarkMode ? "dark" : ""}>
+      <button
+      className="theme-button"
+      onClick={() => setIsDarkMode(!isDarkMode)}
+      aria-label="Toggle dark mode"
+    >
+      {isDarkMode ? "☀" : "☾"}
+    </button>
+    <button
+      className="controls-button"
+      onClick={() => setShowControls((show) => !show)}
+      aria-label="Show keyboard controls">?</button>
+
+    {showControls && (
+      <div className="controls-panel">
+        <strong>Keyboard shortcuts</strong>
+        <div>
+          <span>Space</span>
+          <span>Play / Pause</span>
+        </div>
+        <div>
+          <span>← →</span>
+          <span>Previous / Next word</span>
+        </div>
+        <div>
+          <span>R</span>
+          <span>Reset</span>
+        </div>
+        <div>
+          <span>Esc</span>
+          <span>Exit reading mode</span>
+        </div>
+      </div>
+    )}
       {isReadingMode ? (
         <section className="reader fullscreen">
           <button
@@ -115,14 +214,6 @@ function App() {
             aria-label="Edit text"
           >
             ✎
-          </button>
-
-          <button
-            className="theme-button"
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            aria-label="Toggle dark mode"
-          >
-            {isDarkMode ? "☀" : "☾"}
           </button>
 
           <div className="word">
@@ -217,14 +308,6 @@ function App() {
           <section className="input">
             <div className="input-header">
               <h1>Paste your text here</h1>
-
-              <button
-                className="theme-button"
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                aria-label="Toggle dark mode"
-              >
-                {isDarkMode ? "☀" : "☾"}
-              </button>
             </div>
 
             <textarea
