@@ -128,6 +128,27 @@ function App() {
 }, [words.length, isReadingMode])
 
   useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement
+
+      if (
+        !target.closest(".controls-panel") &&
+        !target.closest(".controls-button")
+      ) {
+        setShowControls(false)
+      }
+    }
+
+    if (showControls) {
+      document.addEventListener("click", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside)
+    }
+  }, [showControls])
+
+  useEffect(() => {
     if (!isPlaying) return
 
     const timer = setInterval(() => {
