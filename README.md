@@ -1,4 +1,4 @@
-#Reading Tool
+# Reading Tool
 
 A simple reading tool for personal use. During my studies, I read a lot of scientific articles and course material, and felt the need for an RSVP-like application that would allow me to read more quickly with less friction.
 
