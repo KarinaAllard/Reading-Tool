@@ -9,6 +9,34 @@ function getFocusIndex(word: string) {
   return Math.floor(length * 0.4)
 }
 
+function cleanText(text: string) {
+  return text
+    // Remove numeric references such as [4], [6,7] and [1–3]
+    .replace(/\[\s*\d+(?:\s*[-–,]\s*\d+)*\s*\]/g, "")
+
+    // Clean each paragraph separately
+    .split(/\n\s*\n/)
+    .map((paragraph) =>
+      paragraph
+        // Join lines within the same paragraph
+        .replace(/\s*\n\s*/g, " ")
+
+        // Normalize spaces
+        .replace(/\s+/g, " ")
+
+        // Clean spaces around punctuation
+        .replace(/\s+([,.!?;:])/g, "$1")
+        .replace(/\(\s+/g, "(")
+        .replace(/\s+\)/g, ")")
+
+        .trim()
+    )
+
+    // Put the paragraphs back
+    .filter(Boolean)
+    .join("\n\n")
+}
+
 function App() {
   const [text, setText] = useState("")
   const [currentWord, setCurrentWord] = useState(0)
@@ -188,7 +216,7 @@ function App() {
 
           <section className="input">
             <div className="input-header">
-              <h1>Reading Tool</h1>
+              <h1>Paste your text here</h1>
 
               <button
                 className="theme-button"
@@ -206,7 +234,15 @@ function App() {
             />
 
             <div className="input-footer">
-              <button onClick={() => setText("")}>Clear</button>
+              <div className="text-actions">
+                <button onClick={() => setText("")}>Clear</button>
+                <button onClick={() => setText(cleanText(text))}>
+                  Clean up formatting
+                </button>
+                <p className="help-text">
+                  Removes citation numbers and fixes formatting from copied text.
+                </p>
+              </div>
 
               <p>Word Count: {words.length}</p>
             </div>

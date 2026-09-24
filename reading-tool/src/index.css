@@ -179,8 +179,23 @@ main {
 .input-footer button {
   border: none;
   background: transparent;
+  color: inherit;
   text-decoration: underline;
   opacity: 0.7;
+}
+
+.text-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.help-text {
+  margin: 0;
+  padding-left: 6px;
+  font-size: 0.8rem;
+  opacity: 0.55;
 }
 
 /* Edit / theme buttons */
